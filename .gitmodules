@@ -1,3 +1,6 @@
 [submodule "provisioning/roles/rbenv"]
 	path = provisioning/roles/rbenv
 	url = https://github.com/zzet/ansible-rbenv-role.git
+[submodule "provisioning/roles/mysql"]
+	path = provisioning/roles/mysql
+	url = https://github.com/Ansibles/mysql.git
