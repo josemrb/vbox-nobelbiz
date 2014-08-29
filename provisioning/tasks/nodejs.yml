@@ -1,0 +1,6 @@
+---
+- name: node.js | add ppa
+  apt_repository: repo='ppa:chris-lea/node.js' state=present update_cache=yes
+
+- name: node.js | install
+  apt: pkg=nodejs state=latest install_recommends=no

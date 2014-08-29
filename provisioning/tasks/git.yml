@@ -1,0 +1,9 @@
+---
+- name: git | add ppa
+  apt_repository: repo='ppa:git-core/ppa' state=present update_cache=yes
+
+- name: git | install
+  apt: pkg={{ item }} state=latest install_recommends=no
+  with_items:
+    - git
+    - git-core
