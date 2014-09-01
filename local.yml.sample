@@ -1,0 +1,10 @@
+---
+ports:
+  -
+    guest: 3000
+    host: 8080
+
+folders:
+  -
+    host: "/home/user/projects/code"
+    guest: "/vagrant"
