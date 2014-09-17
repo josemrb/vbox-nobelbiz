@@ -9,6 +9,9 @@
     - name: clean up | remove ruby
       apt: name=ruby state=absent
 
+    - name: dep | mysql client
+      apt: name=libmysqlclient-dev state=latest
+
     - include: tasks/git.yml
 
     - include: tasks/nodejs.yml
@@ -32,5 +35,5 @@
         version: v0.4.0
         ruby_version: 2.1.2
       rbenv_users:
-        - name: vagrant
-          home: "/home/vagrant/"
+        - name: "{{ ansible_env.USER }}"
+          home: "{{ ansible_env.HOME }}"
