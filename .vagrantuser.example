@@ -7,3 +7,7 @@ ports:
   -
     guest: 3000
     host: 3000
+networks:
+  private:
+    -
+      ip_address: 192.168.100.10
