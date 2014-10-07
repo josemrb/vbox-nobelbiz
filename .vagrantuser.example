@@ -1,0 +1,9 @@
+---
+folders:
+  -
+    host: /home/user/projects/nobelbiz/
+    guest: /home/vagrant/projects/
+ports:
+  -
+    guest: 3000
+    host: 3000
