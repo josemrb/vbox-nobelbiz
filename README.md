@@ -1,8 +1,8 @@
-# vbox-nobelbiz
+# vboxes
 
 Vagrantfile + Ansible Provisioning
 
-Virtual Machine for Development of the NobelBiz Projects.
+Virtual Machine for Development
 
 ## Requirements
 
@@ -21,8 +21,8 @@ vagrant plugin install nugrant
 
 Building the virtual machine is this easy:
 ```bash
-host $ git clone https://github.com/josemrb/vbox-nobelbiz.git
-host $ cd vbox-nobelbiz
+host $ git clone https://github.com/josemrb/vboxes.git
+host $ cd vboxes
 host $ git submodule update --init --recursive
 ```
 Copy the ```.vagrantuser.example``` file:
