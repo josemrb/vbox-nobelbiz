@@ -13,5 +13,6 @@
     - ANXS.cron
     - ANXS.utilities
     - { role: nodesource.node, when: '"nodejs" in roles'}
+    - { role: DavidWittman.redis, when: '"redis" in roles'}
     - { role: ANXS.mysql, when: '"mysql" in roles'}
 
