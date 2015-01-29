@@ -1,13 +1,23 @@
 ---
-folders:
-  -
-    host: /home/user/projects/nobelbiz/
-    guest: /home/vagrant/projects/
-ports:
-  -
-    guest: 3000
-    host: 3000
-networks:
-  private:
-    -
-      ip_address: 192.168.100.10
+vboxes:
+  - default:
+    - vm:
+      - hostname: ruby.dev
+      - synced_folders
+        -
+          host: /mnt/projects/software/
+          guest: /home/vagrant/projects/
+      - forwarded_ports:
+        -
+          host: 3000
+          guest: 3000
+      - networks:
+        - private:
+          - ip: 192.168.100.10
+    - ansible:
+      - extra_vars
+        - roles
+          - mysql
+          - redis
+          - ruby
+            - version: 2.2.0
