@@ -1,22 +1,23 @@
 # vboxes
 
-Vagrantfile + Ansible Provisioning
-
-Virtual Machine for Development
+Vagrant Box + Ansible Provisioning
 
 ## Requirements
 
-* [VirtualBox](https://www.virtualbox.org)
-* [Vagrant](http://vagrantup.com)
-* [Nugrant](https://github.com/maoueh/nugrant)
+* [VirtualBox 4.2.x](https://www.virtualbox.org)
+* [Vagrant 1.7.x](https://vagrantup.com)
+  * [Nugrant](https://github.com/maoueh/nugrant)
+  * [vagrant-hostmanager](https://github.com/smdahlen/vagrant-hostmanager)
 * [Ansible](http://www.ansible.com)
 
-## How To Install The Plugins
+## How to install the Vagrant plugins?
 
-For vagrant 1.2+ run:
-```bash
-vagrant plugin install nugrant
+run:
+```sh
+$ vagrant plugin install nugrant
+$ vagrant plugin install vagrant-hostmanager
 ```
+
 ## How To Build The Virtual Machine
 
 Building the virtual machine is this easy:
