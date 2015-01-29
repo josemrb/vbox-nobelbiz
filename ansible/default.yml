@@ -2,3 +2,13 @@
 - hosts: all
   remote_user: vagrant
   sudo: yes
+
+  pre_tasks:
+    - include: tasks/prepare.yml
+
+  roles:
+    - ANXS.timezone
+    - ANXS.build-essential
+    - ANXS.git
+    - ANXS.cron
+    - ANXS.utilities
