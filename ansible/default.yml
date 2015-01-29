@@ -12,3 +12,4 @@
     - ANXS.git
     - ANXS.cron
     - ANXS.utilities
+    - { role: ANXS.mysql, when: '"mysql" in roles'}
