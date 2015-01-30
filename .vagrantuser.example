@@ -1,13 +1,41 @@
 ---
-folders:
-  -
-    host: /home/user/projects/nobelbiz/
-    guest: /home/vagrant/projects/
-ports:
-  -
-    guest: 3000
-    host: 3000
-networks:
-  private:
-    -
-      ip_address: 192.168.100.10
+vboxes:
+  development:
+    vm:
+      hostname: ruby.dev
+      synced_folders:
+      -
+        host: /mnt/projects-disk-1/software/
+        guest: /home/vagrant/projects/
+      forwarded_ports:
+      -
+        host: 3000
+        guest: 3000
+      networks:
+        private:
+        - ip: 192.168.100.10
+    virtualbox:
+      cpus: 1
+      memory: 1024
+      name: ruby-development
+    ansible:
+      playbook: default.yml
+      extra_vars:
+        vars:
+          timezone_zone: America/La_Paz
+          redis_version: 2.8.8
+          mysql_root_password: '1234qwer'
+          mysql_users:
+            - name: developer
+              pass:
+              priv: "*.*:ALL"
+              host: "%"
+          ruby_version: 2.2.0
+          ruby_gems_default:
+            - bundler
+        roles:
+          - nodejs
+          - mysql
+          - redis
+          - rbenv
+
