@@ -7,12 +7,23 @@
     - include: tasks/prepare.yml
 
   roles:
-    - ANXS.timezone
-    - ANXS.build-essential
-    - ANXS.git
-    - ANXS.cron
-    - ANXS.utilities
-    - { role: nodesource.node, when: '"nodejs" in roles'}
-    - { role: DavidWittman.redis, when: '"redis" in roles'}
-    - { role: ANXS.mysql, when: '"mysql" in roles'}
+    - role: ANXS.timezone
+    - role: ANXS.build-essential
+    - role: ANXS.git
+    - role: ANXS.cron
+    - role: ANXS.utilities
+    - role: nodesource.node
+      when: '"nodejs" in roles'
+    - role: DavidWittman.redis
+      when: '"redis" in roles'
+    - role: ANXS.mysql
+      when: '"mysql" in roles'
+    - role: pablocrivella.rbenv
+      when: '"rbenv" in roles'
+      rbenv:
+        env: "{{ vars.rbenv.env }}"
+        version: "{{ vars.rbenv.version }}"
+        global: "{{ vars.rbenv.global }}"
+        rubies: "{{ vars.rbenv.rubies }}"
+      rbenv_users: "{{ vars.rbenv_users }}"
 
