@@ -25,7 +25,7 @@ $ vagrant plugin install vagrant-hostmanager
 - MySQL
 - Ruby
 
-#### How to build the guest machine
+#### How to build the guest machine?
 First, clone the repository.
 ```sh
 $ git clone https://github.com/josemrb/vboxes.git
