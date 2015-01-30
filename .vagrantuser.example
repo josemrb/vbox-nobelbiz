@@ -1,23 +1,39 @@
 ---
 vboxes:
-  - default:
-    - vm:
-      - hostname: ruby.dev
-      - synced_folders
-        -
-          host: /mnt/projects/software/
-          guest: /home/vagrant/projects/
-      - forwarded_ports:
-        -
-          host: 3000
-          guest: 3000
-      - networks:
-        - private:
-          - ip: 192.168.100.10
-    - ansible:
-      - extra_vars
-        - roles
+  development:
+    vm:
+      hostname: ruby.dev
+      synced_folders:
+      -
+        host: /mnt/projects-disk-1/software/
+        guest: /home/vagrant/projects/
+      forwarded_ports:
+      -
+        host: 3000
+        guest: 3000
+      networks:
+        private:
+        - ip: 192.168.100.10
+    virtualbox:
+      cpus: 1
+      memory: 1024
+      name: ruby-development
+    ansible:
+      playbook: default.yml
+      extra_vars:
+        vars:
+          rbenv:
+            env: user
+            version: v0.4.0
+            global: 2.2.0
+            rubies:
+              - 2.2.0
+          rbenv_users:
+            - name: vagrant
+              home: /home/vagrant
+        roles:
+          - nodejs
           - mysql
           - redis
-          - ruby
-            - version: 2.2.0
+          - rbenv
+
