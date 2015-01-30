@@ -5,32 +5,6 @@ VAGRANT_API_VERSION = 2
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
 
-  config.user.defaults = {
-    vboxes: [
-      development: {
-        vm: {
-          hostname: 'vbox.dev',
-          synced_folders: [],
-          forwarded_ports: [],
-          networks: {
-            private: [
-              ip: '192.168.100.10'
-            ]
-          }
-        },
-        virtualbox: {
-          cpus: 1,
-          memory: 1024,
-          name: "vbox_#{Time.now.strftime("%Y-%m-%d_%H%M")}"
-        },
-        ansible: {
-          playbook: 'default.yml',
-          extra_vars: {}
-        }
-      }
-    ]
-  }
-
   config.vm.box = 'ubuntu/trusty32'
   config.vm.box_check_update = true
 

@@ -22,15 +22,17 @@ vboxes:
       playbook: default.yml
       extra_vars:
         vars:
-          rbenv:
-            env: user
-            version: v0.4.0
-            global: 2.2.0
-            rubies:
-              - 2.2.0
-          rbenv_users:
-            - name: vagrant
-              home: /home/vagrant
+          timezone_zone: America/La_Paz
+          redis_version: 2.8.8
+          mysql_root_password: '1234qwer'
+          mysql_users:
+            - name: developer
+              pass:
+              priv: "*.*:ALL"
+              host: "%"
+          ruby_version: 2.2.0
+          ruby_gems_default:
+            - bundler
         roles:
           - nodejs
           - mysql

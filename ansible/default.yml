@@ -8,6 +8,7 @@
 
   roles:
     - role: ANXS.timezone
+      timezone_zone: "{{ vars.timezone_zone }}"
     - role: ANXS.build-essential
     - role: ANXS.git
     - role: ANXS.cron
@@ -16,14 +17,21 @@
       when: '"nodejs" in roles'
     - role: DavidWittman.redis
       when: '"redis" in roles'
+      redis_version: "{{ vars.redis_version }}"
     - role: ANXS.mysql
       when: '"mysql" in roles'
+      mysql_root_password: "{{ vars.mysql_root_password }}"
+      mysql_users: "{{ vars.mysql_users }}"
     - role: pablocrivella.rbenv
       when: '"rbenv" in roles'
       rbenv:
-        env: "{{ vars.rbenv.env }}"
-        version: "{{ vars.rbenv.version }}"
-        global: "{{ vars.rbenv.global }}"
-        rubies: "{{ vars.rbenv.rubies }}"
-      rbenv_users: "{{ vars.rbenv_users }}"
+        env: user
+        version: v0.4.0
+        global: "{{ vars.ruby_version }}"
+        rubies:
+          - "{{ vars.ruby_version }}"
+      rbenv_default_gems: "{{ vars.ruby_gems_default }}"
+      rbenv_users:
+        - name: vagrant
+          home: /home/vagrant
 
