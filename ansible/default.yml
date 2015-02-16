@@ -37,3 +37,4 @@
 
   post_tasks:
     - include: tasks/libmysqlclient.yml
+    - include: tasks/libpcre3.yml

@@ -1,0 +1,5 @@
+---
+- name: libpcre3 | install
+  apt: pkg=libpcre3 state=latest install_recommends=no
+- name: libpcre3 | install development headers
+  apt: pkg=libpcre3-dev state=latest install_recommends=no
