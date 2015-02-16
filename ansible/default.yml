@@ -35,3 +35,5 @@
         - name: vagrant
           home: /home/vagrant
 
+  post_tasks:
+    - include: tasks/libmysqlclient.yml
