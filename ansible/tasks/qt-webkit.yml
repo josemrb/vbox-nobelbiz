@@ -1,0 +1,6 @@
+---
+- name: qt-webkit | install library
+  apt: pkg=qt5-default state=latest install_recommends=no
+- name: qt-webkit | install development headers
+  apt: pkg=libqt5webkit5-dev state=latest install_recommends=no
+

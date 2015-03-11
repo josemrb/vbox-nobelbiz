@@ -45,3 +45,4 @@
     - include: tasks/libpq.yml
       when: '"postgresql" in roles'
     - include: tasks/libpcre3.yml
+    - include: tasks/qt-webkit.yml
