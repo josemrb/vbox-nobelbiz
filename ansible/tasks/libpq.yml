@@ -1,0 +1,3 @@
+---
+- name: libpq | install library and development headers
+  apt: pkg=libpq-dev state=latest install_recommends=no

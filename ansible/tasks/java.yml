@@ -1,0 +1,20 @@
+---
+- name: java | add webupd8 gpg key
+  apt_key: keyserver=keyserver.ubuntu.com id=EEA14886
+
+- name: java | add webupd8 repository
+  apt_repository: repo='ppa:webupd8team/java'
+
+- name: java | update repositories
+  apt: update_cache=true cache_valid_time=600
+
+- name: java | accept license
+command: 'echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selec
+  tions'
+
+- name: java | install jdk-8
+  apt: pkg=oracle-java8-installer state=latest install_recommends=no
+
+- name: java | setup variables
+  apt: pkg=oracle-java8-set-default state=latest install_recommends=no
+

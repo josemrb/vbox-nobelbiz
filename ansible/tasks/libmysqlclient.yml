@@ -1,0 +1,5 @@
+---
+- name: libmysqlclient | install
+  apt: pkg=libmysqlclient state=latest install_recommends=no
+- name: libmysqlclient | install development headers
+  apt: pkg=libmysqlclient-dev state=latest install_recommends=no

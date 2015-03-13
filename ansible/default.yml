@@ -15,6 +15,10 @@
     - role: ANXS.utilities
     - role: nodesource.node
       when: '"nodejs" in roles'
+    - role: ANXS.postgresql
+      when: '"postgresql" in roles'
+      postgresql_version: "{{ vars.postgresql_version }}"
+      postgresql_ext_install_contrib: yes
     - role: DavidWittman.redis
       when: '"redis" in roles'
       redis_version: "{{ vars.redis_version }}"
@@ -35,3 +39,10 @@
         - name: vagrant
           home: /home/vagrant
 
+  post_tasks:
+    - include: tasks/libmysqlclient.yml
+      when: '"mysql" in roles'
+    - include: tasks/libpq.yml
+      when: '"postgresql" in roles'
+    - include: tasks/libpcre3.yml
+    - include: tasks/qt-webkit.yml

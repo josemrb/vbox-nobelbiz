@@ -110,6 +110,18 @@ mysql_users:
     host: "%"
 ```
 
+#### [ANXS/postgresql](https://github.com/ANXS/postgresql)
+Role which installs and configure an PostgreSQL instance.  
+To enable edit the .vagrantuser file and add the item to the `vboxes.[name].ansible.roles` array.
+```yaml
+- postgresql
+```
+##### Variables
+To change the default value edit the `.vagrantuser` file and update the item in the `vboxes.[name].ansible.vars` hash.
+```yaml
+postgresql_version: 9.3
+```
+
 #### [pablocrivella/ansible-role-rbenv](https://github.com/pablocrivella/ansible-role-rbenv)
 Role which installs rbenv with selected plugins and builds Ruby from source.  
 To enable edit the .vagrantuser file and add the item to the `vboxes.[name].ansible.roles` array.
