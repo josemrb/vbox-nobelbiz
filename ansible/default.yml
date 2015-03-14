@@ -5,6 +5,7 @@
 
   pre_tasks:
     - include: tasks/prepare.yml
+    - include: tasks/remove-ruby.yml
 
   roles:
     - role: ANXS.timezone
