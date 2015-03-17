@@ -1,0 +1,3 @@
+---
+- name: ruby | uninstall
+  apt: pkg=ruby state=absent
