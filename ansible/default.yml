@@ -31,6 +31,10 @@
       when: '"mysql" in roles'
       mysql_root_password: "{{ vars.mysql_root_password }}"
       mysql_users: "{{ vars.mysql_users }}"
+    - role: jdauphant.nginx
+      when: '"nginx" in roles'
+      nginx_sites: "{{ vars.nginx_sites }}"
+      nginx_configs: "{{ vars.nginx_configs }}"
     - role: pablocrivella.rbenv
       when: '"rbenv" in roles'
       rbenv:
