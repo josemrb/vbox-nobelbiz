@@ -14,6 +14,8 @@
     - role: ANXS.git
     - role: ANXS.cron
     - role: ANXS.utilities
+      utilities_extras:
+        - silversearcher-ag
     - role: nodesource.node
       when: '"nodejs" in roles'
     - role: ANXS.postgresql
