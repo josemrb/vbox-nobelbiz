@@ -8,6 +8,8 @@
     - include: tasks/remove-ruby.yml
 
   roles:
+    - role: angstwad.docker_ubuntu
+      when: '"docker" in roles'
     - role: ANXS.timezone
       timezone_zone: "{{ vars.timezone_zone }}"
     - role: ANXS.build-essential
@@ -42,6 +44,7 @@
         - name: vagrant
           home: /home/vagrant
 
+
   post_tasks:
     - include: tasks/libmysqlclient.yml
       when: '"mysql" in roles'
@@ -49,3 +52,4 @@
       when: '"postgresql" in roles'
     - include: tasks/libpcre3.yml
     - include: tasks/qt-webkit.yml
+      when: '"rbenv" in roles'

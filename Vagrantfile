@@ -4,14 +4,15 @@
 VAGRANT_API_VERSION = 2
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
-
-  config.vm.box = 'ubuntu/trusty32'
+  config.vm.box = config.user.vm.box
   config.vm.box_check_update = true
 
-  config.hostmanager.enabled = true
-  config.hostmanager.manage_host = true
-  config.hostmanager.ignore_private_ip = false
-  config.hostmanager.include_offline = true
+  if config.user.vm.hostmanager
+    config.hostmanager.enabled = true
+    config.hostmanager.manage_host = true
+    config.hostmanager.ignore_private_ip = false
+    config.hostmanager.include_offline = true
+  end
 
   config.user.vboxes.each do |vbox, data|
     config.vm.define vbox do |current|
@@ -22,11 +23,14 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
       end
 
       data.vm.forwarded_ports.each do |item|
-        current.vm.network :forwarded_port, guest: item[:guest], host: item[:host]
+        current.vm.network :forwarded_port,
+                           guest: item[:guest],
+                           host: item[:host]
       end
 
       data.vm.networks.private.each do |item|
-        current.vm.network :private_network, ip: item[:ip]
+        current.vm.network :private_network, ip: item[:ip] if item.key?(:ip)
+        current.vm.network :private_network, type: 'dhcp' if item.key?(:dhcp)
       end
 
       current.vm.provider :virtualbox do |vb|
@@ -42,4 +46,3 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
     end
   end
 end
-
