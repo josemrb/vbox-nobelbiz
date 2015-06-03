@@ -1,41 +1,39 @@
 ---
 vboxes:
-  development:
+  cc-ruby:
     vm:
-      hostname: ruby.dev
+      box: 'ubuntu/trusty32'
+      hostmanager: true
+      hostname: cc-ruby.dev
       synced_folders:
-      -
-        host: /mnt/projects-disk-1/software/
-        guest: /home/vagrant/projects/
-      forwarded_ports:
-      -
-        host: 3000
-        guest: 3000
+        -
+          host: /home/josemrb/Projects/
+          guest: /home/vagrant/projects/
+      forwarded_ports: []
       networks:
         private:
         - ip: 192.168.100.10
     virtualbox:
       cpus: 1
-      memory: 1024
-      name: ruby-development
+      memory: 2048
     ansible:
       playbook: default.yml
       extra_vars:
         vars:
           timezone_zone: America/La_Paz
-          redis_version: 2.8.8
-          mysql_root_password: '1234qwer'
+          redis_version: 2.8.20
+          mysql_root_password:
           mysql_users:
             - name: developer
               pass:
               priv: "*.*:ALL"
               host: "%"
-          ruby_version: 2.2.0
+          ruby_version: 2.2.2
           ruby_gems_default:
+            - gem-ripper-tags
             - bundler
         roles:
           - nodejs
           - mysql
           - redis
           - rbenv
-

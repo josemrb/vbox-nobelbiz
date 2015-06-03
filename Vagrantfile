@@ -4,17 +4,19 @@
 VAGRANT_API_VERSION = 2
 
 Vagrant.configure(VAGRANT_API_VERSION) do |config|
-  config.vm.box = config.user.vm.box
-  config.vm.box_check_update = true
-
-  if config.user.vm.hostmanager
-    config.hostmanager.enabled = true
-    config.hostmanager.manage_host = true
-    config.hostmanager.ignore_private_ip = false
-    config.hostmanager.include_offline = true
-  end
+  config.ssh.forward_agent = true
 
   config.user.vboxes.each do |vbox, data|
+    config.vm.box = data.vm.box
+    config.vm.box_check_update = true
+
+    if data.vm.hostmanager
+      config.hostmanager.enabled = true
+      config.hostmanager.manage_host = true
+      config.hostmanager.ignore_private_ip = false
+      config.hostmanager.include_offline = true
+    end
+
     config.vm.define vbox do |current|
       current.vm.hostname = data.vm.hostname
 
@@ -36,7 +38,7 @@ Vagrant.configure(VAGRANT_API_VERSION) do |config|
       current.vm.provider :virtualbox do |vb|
         vb.cpus = data.virtualbox.cpus
         vb.memory = data.virtualbox.memory
-        vb.name = data.virtualbox.name
+        vb.name = data.virtualbox.name if data.virtualbox.key?(:name)
       end
 
       current.vm.provision :ansible do |ansible|
