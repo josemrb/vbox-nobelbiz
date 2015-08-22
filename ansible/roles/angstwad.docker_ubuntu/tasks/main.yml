@@ -1,56 +1,13 @@
 ---
 # tasks file for docker.ubuntu
 - name: Fail if not a new release of Ubuntu
-  fail: 
+  fail:
     msg: "{{ ansible_distribution_version }} is not an acceptable version of Ubuntu for this role"
-  when: ansible_distribution_version | version_compare(12.04, '<') or ansible_distribution_version | version_compare(12.10, '=')
+  when: ansible_distribution_version|version_compare(12.04, '<') or ansible_distribution_version|version_compare(12.10, '=')
 
-- name: Install raring kernel onto 12.04
-  apt:
-    pkg: "{{ item }}"
-    state: "{{ kernel_pkg_state }}"
-    update_cache: yes
-    cache_valid_time: 600
-  with_items:
-    - linux-image-generic-lts-raring
-    - linux-headers-generic-lts-raring
-  register: kernel_result
-  when: "ansible_distribution_version == '12.04'"
-
-- name: Install latest kernel extras for Ubuntu 13.04+
-  apt:
-    pkg: "linux-image-extra-{{ ansible_kernel }}"
-    state: "{{ kernel_pkg_state }}"
-    update_cache: yes
-    cache_valid_time: 600
-  when: "ansible_distribution_version == '13.04' or ansible_distribution_version == '13.10'"
-
-# Fix for https://github.com/dotcloud/docker/issues/4568
-- name: Install cgroup-lite for Ubuntu 13.10
-  apt:
-    pkg: cgroup-lite
-    state: "{{ cgroup_lite_pkg_state }}"
-    update_cache: yes
-    cache_valid_time: 600
-  register: cgroup_lite_result
-  when: "ansible_distribution_version == '13.10'"
-
-- name: Reboot instance
-  command: /sbin/shutdown -r now
-  register: reboot_result
-  when: "(ansible_distribution_version == '12.04' and kernel_result|changed)
-      or (ansible_distribution_version == '13.10' and cgroup_lite_result|changed)"
-
-- name: Wait for instance to come online (10 minute timeout)
-  local_action:
-    module: wait_for
-    host: "{{ ansible_ssh_host|default(inventory_hostname) }}"
-    port: "{{ ansible_ssh_port|default(ssh_port) }}"
-    delay: 30
-    timeout: 600
-    state: started
-  when: "(ansible_distribution_version == '12.04' and reboot_result|changed)
-      or (ansible_distribution_version == '13.10' and cgroup_lite_result|changed)"
+- name: Update kernel, kernel extras, Xorg pkgs, and related tasks
+  include: kernel_check_and_update.yml
+  when: kernel_update_and_reboot_permitted or install_kernel_extras
 
 - name: Add Docker repository key
   apt_key:
@@ -65,9 +22,9 @@
     state: present
 
 - name: Install (or update) docker package
-  apt: 
+  apt:
     name: "{{ docker_pkg_name }}"
-    state: latest
+    state: "{{ 'latest' if update_docker_package else 'present' }}"
     update_cache: yes
     cache_valid_time: 600
 
@@ -83,9 +40,9 @@
   when: docker_opts != ""
 
 - name: Fix DNS in docker.io
-  lineinfile: 
-    dest: /etc/default/docker 
-    regexp: "DOCKER_OPTS=" 
+  lineinfile:
+    dest: "{{ docker_defaults_file_path }}"
+    regexp: "DOCKER_OPTS="
     line: 'DOCKER_OPTS="--dns {{ ansible_docker0.ipv4.address }}"'
   register: dns_fix
   notify: Restart dockerio
@@ -94,7 +51,7 @@
 - meta: flush_handlers
   when: "dns_fix|changed"
 
-- pause: 
+- pause:
     seconds: 1
   when: "dns_fix|changed"
 
@@ -110,45 +67,78 @@
     - python-pip
 
 # Upgrade pip with pip to fix angstwad/docker.ubuntu/pull/35 and docker-py/issues/525
-- name: Upgrade latest pip, setuptools, and docker-py with pip
-  pip: 
-    name: "{{ item }}"
+# Install latest version when no specific release is set.
+- name: Upgrade latest pip, setuptools, docker-py and docker-compose with pip
+  pip:
+    name: "{{ item.name }}"
     state: latest
   with_items:
-    - pip
-    - setuptools
-    - docker-py
+    - { name: pip, version: "{{ pip_version_pip }}" }
+    - { name: setuptools, version: "{{ pip_version_setuptools }}" }
+    - { name: docker-py, version: "{{ pip_version_docker_py }}" }
+    - { name: docker-compose, version: "{{ pip_version_docker_compose }}" }
+  when: item.version=="latest"
+
+# Install specific version when set in the variables
+- name: Install specific pip, setuptools, docker-py and docker-compose with pip
+  pip:
+    name: "{{ item.name }}"
+    state: present
+    version: "{{ item.version }}"
+  with_items:
+    - { name: pip, version: "{{ pip_version_pip }}" }
+    - { name: setuptools, version: "{{ pip_version_setuptools }}" }
+    - { name: docker-py, version: "{{ pip_version_docker_py }}" }
+    - { name: docker-compose, version: "{{ pip_version_docker_compose }}" }
+  when: item.version!="latest"
 
 - name: Check if /etc/updatedb.conf exists
-  stat: 
+  stat:
     path: /etc/updatedb.conf
   register: updatedb_conf_exists
 
 - name: Ensure updatedb does not index /var/lib/docker
-  shell: >
-    ex -s -c '/PRUNEPATHS=/v:/var/lib/docker:s:"$: /var/lib/docker"' -c 'wq' /etc/updatedb.conf
+  lineinfile:
+    dest: /etc/updatedb.conf
+    state: present
+    backrefs: yes
+    regexp: '^PRUNEPATHS="(/var/lib/docker )?(.*)"$'
+    line: 'PRUNEPATHS="/var/lib/docker \2"'
   when: updatedb_conf_exists.stat.exists
 
 - name: Check if /etc/default/ufw exists
-  stat: 
+  stat:
     path: /etc/default/ufw
   register: ufw_default_exists
 
 - name: Change ufw default forward policy from drop to accept
-  lineinfile: 
-    dest: /etc/default/ufw 
-    regexp: "^DEFAULT_FORWARD_POLICY=" 
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: "^DEFAULT_FORWARD_POLICY="
     line: "DEFAULT_FORWARD_POLICY=\"ACCEPT\""
   when: ufw_default_exists.stat.exists
 
-- name: Start docker-lxc
+- name: Start docker
   service:
     name: docker
     state: started
-  when: docker_pkg_name == 'lxc-docker'
+  when: docker_pkg_name.find('lxc-docker') != -1
 
 - name: Start docker.io
   service:
     name: docker.io
     state: started
   when: docker_pkg_name == 'docker.io'
+
+  # ATTENTION: this task can potentially create new users!
+- name: Add users to the docker group
+  user:
+    name:   "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: docker_group_members
+  when: docker_group_members is defined
+
+- name: update facts if docker0 is not defined
+  action: setup
+  when: ansible_docker0 is not defined
