@@ -5,7 +5,7 @@
         owner={{ redis_user }}
 
 - name: create redis init script
-  template: src={{ item }} dest=/etc/init.d/redis_{{ redis_port }}
+  template: src="{{ item }}" dest=/etc/init.d/redis_{{ redis_port }}
             mode=0755
   # Choose the distro-specific template. We must specify the templates
   # path here because with_first_found tries to find files in files/
@@ -24,6 +24,19 @@
 - name: check if log file exists
   stat: path={{ redis_logfile }}
   register: logfile_stat
+  
+- name: ensure pidfile directory exists and has correct owner
+  file: path={{ redis_pidfile|dirname }}
+        owner={{ redis_user }}
+        state=directory
+        recurse=yes
+
+- name: ensure logfile directory exists and has correct owner
+  file: path={{ redis_logfile|dirname }}
+        owner={{ redis_user }}
+        state=directory
+        recurse=yes
+  when: redis_logfile
 
 - name: ensure that log file exists and is writable by redis
   file: path={{ redis_logfile }}

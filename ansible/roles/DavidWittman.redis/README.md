@@ -5,6 +5,16 @@
  - Requires Ansible 1.6.3+
  - Compatible with most versions of Ubuntu/Debian and RHEL/CentOS 6.x
 
+## Contents
+
+ 1. [Installation](#installation)
+ 2. [Getting Started](#getting-started)
+  1. [Single Redis node](#single-redis-node)
+  2. [Master-Slave Replication](#master-slave-replication)
+  3. [Redis Sentinel](#redis-sentinel)
+ 3. [Installing redis from a source file in the ansible role](#installing-redis-from-a-source-file-in-the-ansible-role)
+ 4. [Configurables](#configurables)
+
 ## Installation
 
 ``` bash
@@ -12,6 +22,10 @@ $ ansible-galaxy install DavidWittman.redis
 ```
 
 ## Getting started
+
+Below are a few example playbooks and configurations for deploying a variety of Redis architectures.
+
+This role expects to be run as root or as a user with sudo privileges.
 
 ### Single Redis node
 
@@ -174,6 +188,10 @@ redis_tcp_keepalive: 0
 # Max connected clients at a time
 redis_maxclients: 10000
 redis_timeout: 0
+# Socket options
+# Set socket_path to the desired path to the socket. E.g. /var/run/redis/{{ redis_port }}.sock
+redis_socket_path: false
+redis_socket_perm: 755
 
 ## Replication options
 # Set slaveof just as you would in redis.conf. (e.g. "redis01 6379")

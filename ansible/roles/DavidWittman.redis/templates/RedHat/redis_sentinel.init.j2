@@ -54,12 +54,15 @@ case "$1" in
                 echo "Redis stopped"
         fi
         ;;
+    status)
+        status -p "${PIDFILE}" "redis_sentinel_${SENTINEL_PORT}"
+        ;;
     restart|force-reload)
         ${0} stop
         ${0} start
         ;;
     *)
-        echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+        echo "Usage: /etc/init.d/$NAME {start|stop|status|restart|force-reload}" >&2
         exit 1
         ;;
 esac
