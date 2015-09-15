@@ -47,7 +47,8 @@
       rbenv_users:
         - name: vagrant
           home: /home/vagrant
-
+    - role: josemrb.phpenv
+      when: '"phpenv" in roles'
 
   post_tasks:
     - include: tasks/libmysqlclient.yml
